@@ -6,7 +6,7 @@
 #include<iostream>
 
 #include"./MatrixFormatException.h"
-
+#include"bab.h"
 
 int* assignement(int n ,int** kosten);
 int** loadMatrix(std::string path);
@@ -15,19 +15,28 @@ int** loadMatrix(std::string path);
 int main(void)
 {
 
-/*DEBUG	
+	
 	int** a = loadMatrix("test.txt");
 
-	for(size_t i = 0; i < 3; i++)
+	bab b = bab(a,4);
+	std::vector<int> result = b.solve();
+	for(size_t i = 0; i < 4; i++)
 	{
 		std::cout << std::endl;
-		for(size_t j = 0; j < 3; j++)
+		for(size_t j = 0; j < 4; j++)
 		{
 			std::cout << a[i][j] << " ";
 		}
 	}
 	std::cout << std::endl;
-*/
+	std::cout << std::endl;
+	int minimum = 0;
+	for(size_t i = 0; i < 4; i++)
+	{
+		std::cout << result[i] << " ";
+		minimum += a[result[i]][i];
+	}
+	std::cout << std::endl << "Result: " << minimum << std::endl;
 	return 0;
 }
 
