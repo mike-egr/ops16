@@ -9,21 +9,21 @@
 #include"bab.h"
 
 int* assignement(int n ,int** kosten);
-int** loadMatrix(std::string path);
+int** loadMatrix(std::string path,size_t * n);
 
 
 int main(void)
 {
 
-	
-	int** a = loadMatrix("test.txt");
+	size_t n;
+	int** a = loadMatrix("test.txt",&n);
 
-	bab b = bab(a,4);
+	bab b = bab(a,n);
 	std::vector<int> result = b.solve();
-	for(size_t i = 0; i < 4; i++)
+	for(size_t i = 0; i < n; i++)
 	{
 		std::cout << std::endl;
-		for(size_t j = 0; j < 4; j++)
+		for(size_t j = 0; j < n; j++)
 		{
 			std::cout << a[i][j] << " ";
 		}
@@ -31,7 +31,7 @@ int main(void)
 	std::cout << std::endl;
 	std::cout << std::endl;
 	int minimum = 0;
-	for(size_t i = 0; i < 4; i++)
+	for(size_t i = 0; i < n; i++)
 	{
 		std::cout << result[i] << " ";
 		minimum += a[result[i]][i];
@@ -41,25 +41,24 @@ int main(void)
 }
 
 
-int ** loadMatrix(std::string path)
+int ** loadMatrix(std::string path, size_t* n)
 {
 	std::ifstream infile(path);
 	std::string line;
-	size_t n; //Number of lines
 	std::getline(infile,line);
 	std::istringstream line1(line);
-	if(!(line1 >> n)) {throw new MatrixFormatException;}
+	if(!(line1 >> *n)) {throw new MatrixFormatException;}
 	
-	int ** a = new int*[n];
+	int ** a = new int*[*n];
 
-	for(size_t i = 0; (i < n); i++)
+	for(size_t i = 0; (i < *n); i++)
 	{	
-		a[i] = new int[n];
+		a[i] = new int[*n];
 
 		std::getline(infile,line);
 		std::istringstream iss(line);
 		
-		for(size_t j = 0; j < n; j++)
+		for(size_t j = 0; j < *n; j++)
 		{
 			if(!(iss >> a[i][j]))
 				throw new MatrixFormatException;

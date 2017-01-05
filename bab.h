@@ -5,7 +5,7 @@
 #include<iostream>
 class PartialSolution;
 
-
+//Repräsentiert einen Lösungskandidaten
 class PartialSolution
 {
 	public:
@@ -31,13 +31,16 @@ class PartialSolution
 	
 
 	private:
-		size_t depth;
-		int** matrix;
-		size_t n;
+		size_t depth; //Anzahl der gültig besetzten Variablen
+		int** matrix; 
+		size_t n; 
 };
 
 
-
+//Gibt Index zurück in an dem sich der Minimalwert der jeweiligen Spalte befindet
+// size_t j ... Spalte
+// int** matrix ... Problemmatrix
+// size_t n ... Größe der Problemmatrix
 size_t minIndexOfColumn(size_t j, int** matrix, size_t n)
 {	
 	size_t minIndex = 0;
