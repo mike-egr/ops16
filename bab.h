@@ -54,80 +54,7 @@ size_t minIndexOfColumn(size_t j, int** matrix, size_t n)
 
 
 
-class bab
-{
-	public:
-	   	bab(int** matrix, size_t n);
-		~bab();
-		std::vector<int> solve();
-
-	private:
-		int** matrix;
-		int n;
-		int uBound;
-		std::priority_queue<PartialSolution, std::vector<PartialSolution>, std::greater<PartialSolution>> queue;
-		PartialSolution bestSol;
-};
-
-bab::~bab()
-{}
-
-bab::bab(int** matrix, size_t n)
-{
-	this->matrix = matrix;
-	this->n = n;
-	std::vector<int> assignments;
-	this->uBound = 0;
-	for(size_t i = 0; i < n; i++)
-	{
-		this->uBound += matrix[i][i];
-		assignments.push_back(i);	
-	}
-
-	bestSol = PartialSolution(n,matrix,assignments);
-
-	PartialSolution initialSol = PartialSolution(n,matrix);
-	queue.push(initialSol);
-	
-}
-
-std::vector<int> bab::solve()
-{
-	while(!queue.empty())
-	{
-		PartialSolution sol = queue.top();
-		queue.pop();
-		if(sol.solution())
-		{
-			if(sol.lBound < uBound)
-			{	
-				uBound = sol.lBound;
-				bestSol = sol;
-#ifdef DEBUG 
-				std::cout << std::endl << "New best sol: " << sol.lBound << std::endl;
-#endif
-			}
-		}
-		else
-		{
-			std::priority_queue<PartialSolution, std::vector<PartialSolution>, std::greater<PartialSolution>> pq;
-			pq = sol.branch();
-			while(!pq.empty())
-			{ 
-#ifdef DEBUG
-				std::cout << "Queue lbound" << pq.top().lBound;
-#endif
-				if(pq.top().lBound < uBound)
-				{
-					queue.push(pq.top());
-				}
-				pq.pop();
-			}
-		}
-	}
-
-	return bestSol.assignments;
-}
+//Konstruktoren
 
 PartialSolution::PartialSolution(const PartialSolution &obj)
 {
@@ -158,6 +85,8 @@ PartialSolution::PartialSolution(size_t n, int** matrix)
 }
 
 
+
+//Berechnet eine untere Schranke für den Lösungskandidaten
 int PartialSolution::bound()
 {	
 	int bound = 0;
@@ -171,11 +100,14 @@ int PartialSolution::bound()
 	return bound;
 }
 
+//Übeprüft ob es sich bei dem Lösungskandidaten um eine gültige Lösung handelt
 bool PartialSolution::solution()
 {
 	return depth == n;
 }
 
+//Branch methode: Gibt die Unterlösungen eines Lösungskandidaten in einer PQ zurück
+// hier wird gebrancht und gebounded
 std::priority_queue<PartialSolution, std::vector<PartialSolution>, std::greater<PartialSolution>> PartialSolution::branch()
 {	
 #ifdef DEBUG
@@ -200,6 +132,8 @@ std::priority_queue<PartialSolution, std::vector<PartialSolution>, std::greater<
 	return pq;
 }
 
+
+//Vergleichsoperatoren: Vergleichen die Lösungskandidaten anhand der unteren Schranke
 bool PartialSolution::operator<(const PartialSolution& s2) const
 {
 	return this->lBound < s2.lBound;
@@ -223,6 +157,89 @@ bool PartialSolution::operator<=(const PartialSolution& s2) const
 bool PartialSolution::operator>=(const PartialSolution& s2) const
 {
 	return this->lBound >= s2.lBound;
+}
+
+
+
+class bab
+{
+	public:
+	   	bab(int** matrix, size_t n);
+		~bab();
+		std::vector<int> solve();
+
+	private:
+		int** matrix;
+		int n;
+		int uBound;
+		std::priority_queue<PartialSolution, std::vector<PartialSolution>, std::greater<PartialSolution>> queue;
+		PartialSolution bestSol;
+};
+
+bab::~bab()
+{}
+
+bab::bab(int** matrix, size_t n)
+{
+	this->matrix = matrix;
+	this->n = n;
+	std::vector<int> assignments;
+	this->uBound = 0;
+	for(size_t i = 0; i < n; i++)
+	{
+		this->uBound += matrix[i][i];
+		assignments.push_back(i);	
+	}
+	
+	//Erzeuge irgendeine Lösung gegen die dan Verglichen wird
+	bestSol = PartialSolution(n,matrix,assignments);
+	
+	//Erzuege leeren Lösungskandidaten
+	PartialSolution initialSol = PartialSolution(n,matrix);
+	queue.push(initialSol);
+	
+}
+
+std::vector<int> bab::solve()
+{
+	while(!queue.empty())
+	{
+		//Nehmen besten Lösungskandidaten(LK) aus der Queue und überprüfe ob es eine Lösung ist, wenn ja, ob
+		// die Lösung besser ist als die bisher beste
+		PartialSolution sol = queue.top();
+		queue.pop();
+		if(sol.solution())
+		{
+			if(sol.lBound < uBound)
+			{	
+				uBound = sol.lBound;
+				bestSol = sol;
+#ifdef DEBUG 
+				std::cout << std::endl << "New best sol: " << sol.lBound << std::endl;
+#endif
+			}
+		}
+		else
+		{	
+			//sonst branchen und bounden und LK deren Lower bound geringer ist als die bisher beste lösung
+			// werden verworfen
+			std::priority_queue<PartialSolution, std::vector<PartialSolution>, std::greater<PartialSolution>> pq;
+			pq = sol.branch();
+			while(!pq.empty())
+			{ 
+#ifdef DEBUG
+				std::cout << "Queue lbound" << pq.top().lBound;
+#endif
+				if(pq.top().lBound < uBound)
+				{
+					queue.push(pq.top());
+				}
+				pq.pop();
+			}
+		}
+	}
+
+	return bestSol.assignments;
 }
 
 
