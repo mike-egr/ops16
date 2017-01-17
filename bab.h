@@ -236,6 +236,10 @@ bab::bab(int** matrix, size_t n)
 	PartialSolution initialSol = PartialSolution(n,matrix);
 	queue.push(initialSol);
 	
+#if defined(DEBUG2)
+	std::cout << std::endl << "initial solution: " << uBound;
+#endif
+
 }
 
 std::vector<int> bab::solve()
@@ -248,12 +252,13 @@ std::vector<int> bab::solve()
 		queue.pop();
 		if(sol.lBound < uBound)
 		{
+			//NEVER HAPPENS
 			if(sol.solution())
 			{	
 				uBound = sol.lBound;
 				bestSol = sol;
-#ifdef DEBUG 
-				std::cout << std::endl << "New best sol: " << sol.lBound << std::endl;
+#if defined(DEBUG) || defined(DEBUG2)	
+				std::cout << std::endl << "New best sol1: " << sol.lBound << std::endl;
 #endif
 			}
 		
@@ -274,6 +279,11 @@ std::vector<int> bab::solve()
 						{ 
 							uBound = it->lBound;
 							bestSol = *it;
+
+#if defined(DEBUG) || defined(DEBUG2)	
+				std::cout << std::endl << "New best sol2: " << it->lBound << std::endl;
+#endif
+	
 						}
 						else
 						{
