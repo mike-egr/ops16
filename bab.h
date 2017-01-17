@@ -15,14 +15,14 @@ class PartialSolution
 		PartialSolution(size_t n, int** matrix, std::vector<int> assignments);
 
 		std::priority_queue<PartialSolution, std::vector<PartialSolution>, std::greater<PartialSolution>> branch();
-		int bound();
+		int bound(); //lbound hier drinnen setzen!!!
 		bool solution();
 
 		std::vector<int> assignments;
 		int lBound;
 
 	
-//Operator overloading
+//Operator overloading zum sortieren
 		bool operator< (const PartialSolution &s2) const;
 		bool operator> (const PartialSolution &s2) const;
 		bool operator== (const PartialSolution &s2) const;
@@ -87,6 +87,7 @@ PartialSolution::PartialSolution(size_t n, int** matrix)
 
 
 //Berechnet eine untere Schranke für den Lösungskandidaten
+//TODO:überprüfen ob es eine Lösung ist
 int PartialSolution::bound()
 {	
 	int bound = 0;
