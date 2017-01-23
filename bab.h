@@ -291,6 +291,9 @@ std::vector<int> bab::solve()
 						}
 					}
 				}//ENDFOR
+#if defined(DEBUG3)
+				std::cout << std::endl << "--DEBUG QUEUE SIZE: "<< queue.size() << " --" << std::flush;
+#endif
 			}//ENDELSE
 		}//ENDIF
 	}//ENDWHILE
